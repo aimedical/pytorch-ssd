@@ -17,6 +17,7 @@ from vision.ssd.mobilenet_v2_ssd_lite import create_mobilenetv2_ssd_lite
 from vision.ssd.squeezenet_ssd_lite import create_squeezenet_ssd_lite
 from vision.datasets.voc_dataset import VOCDataset
 from vision.datasets.open_images import OpenImagesDataset
+from vision.datasets.coco_dataset import CocoDetection
 from vision.nn.multibox_loss import MultiboxLoss
 from vision.ssd.config import vgg_ssd_config
 from vision.ssd.config import mobilenetv1_ssd_config
@@ -128,6 +129,7 @@ def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
         running_loss += loss.item()
         running_regression_loss += regression_loss.item()
         running_classification_loss += classification_loss.item()
+
         if i and i % debug_steps == 0:
             avg_loss = running_loss / debug_steps
             avg_reg_loss = running_regression_loss / debug_steps
@@ -213,7 +215,11 @@ if __name__ == '__main__':
             store_labels(label_file, dataset.class_names)
             logging.info(dataset)
             num_classes = len(dataset.class_names)
-
+        elif args.dataset_type == 'coco':
+            dataset = CocoDetection(os.path.join(dataset_path, 'train'), os.path.join(dataset_path, 'train.json'), transform=train_transform, target_transform=target_transform)
+            label_file = os.path.join(args.checkpoint_folder, "coco-model-labels.txt")
+            store_labels(label_file, dataset.class_names)
+            num_classes = len(dataset.class_names)
         else:
             raise ValueError(f"Dataset tpye {args.dataset_type} is not supported.")
         datasets.append(dataset)
@@ -232,6 +238,9 @@ if __name__ == '__main__':
                                         transform=test_transform, target_transform=target_transform,
                                         dataset_type="test")
         logging.info(val_dataset)
+    elif args.dataset_type == "coco":
+        val_dataset = CocoDetection(os.path.join(args.validation_dataset, 'val'), os.path.join(args.validation_dataset, 'val.json'), transform=test_transform, target_transform=target_transform)
+        
     logging.info("validation dataset size: {}".format(len(val_dataset)))
 
     val_loader = DataLoader(val_dataset, args.batch_size,
