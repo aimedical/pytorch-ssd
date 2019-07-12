@@ -28,6 +28,8 @@ class Predictor:
 
     def predict(self, image, top_k=-1, prob_threshold=None):
         cpu_device = torch.device("cpu")
+        if isinstance(image, torch.Tensor):
+            image = image.squeeze(0).numpy()
         height, width, _ = image.shape
         image = self.transform(image)
         images = image.unsqueeze(0)
@@ -35,7 +37,7 @@ class Predictor:
         with torch.no_grad():
             self.timer.start()
             scores, boxes = self.net.forward(images)
-            print("Inference time: ", self.timer.end())
+            # print("Inference time: ", self.timer.end())
         boxes = boxes[0]
         scores = scores[0]
         if not prob_threshold:

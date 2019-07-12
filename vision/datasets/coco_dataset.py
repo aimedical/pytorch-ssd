@@ -36,7 +36,7 @@ class CocoDetection(VisionDataset):
 
         return (np.array(boxes, dtype=np.float32),
                 np.array(labels, dtype=np.int64))
-    
+
     def __getitem__(self, index):
         """
         Args:
