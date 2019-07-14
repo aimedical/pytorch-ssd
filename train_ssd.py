@@ -117,6 +117,7 @@ def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
     running_loss = 0.0
     running_regression_loss = 0.0
     running_classification_loss = 0.0
+    data_num = len(loader.dataset)
     for i, data in enumerate(loader):
         images, boxes, labels = data
         images = images.to(device)
@@ -144,9 +145,9 @@ def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
                 f"Average Regression Loss {avg_reg_loss:.4f}, " +
                 f"Average Classification Loss: {avg_clf_loss:.4f}"
             )
-            tf_logger.add_scalar('avg_loss', avg_loss, i)
-            tf_logger.add_scalar('avg_reg_loss', avg_reg_loss, i)
-            tf_logger.add_scalar('avg_clf_loss', avg_clf_loss, i)
+            tf_logger.add_scalar('avg_loss', avg_loss, epoch * data_num + i)
+            tf_logger.add_scalar('avg_reg_loss', avg_reg_loss, epoch * data_num + i)
+            tf_logger.add_scalar('avg_clf_loss', avg_clf_loss, epoch * data_num + i)
             running_loss = 0.0
             running_regression_loss = 0.0
             running_classification_loss = 0.0
@@ -342,6 +343,9 @@ if __name__ == '__main__':
                 f"Validation Regression Loss {val_regression_loss:.4f}, " +
                 f"Validation Classification Loss: {val_classification_loss:.4f}"
             )
+            tf_logger.add_scalar('val_loss', val_loss, epoch)
+            tf_logger.add_scalar('val_regression_loss', val_regression_loss, epoch)
+            tf_logger.add_scalar('val_classification_loss', val_classification_loss, epoch)
             model_path = os.path.join(args.checkpoint_folder, f"{args.net}-Epoch-{epoch}-Loss-{val_loss}.pth")
             net.save(model_path)
             logging.info(f"Saved model {model_path}")
