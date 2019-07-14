@@ -8,6 +8,8 @@ import torch
 from torch.utils.data import DataLoader, ConcatDataset
 from torch.optim.lr_scheduler import CosineAnnealingLR, MultiStepLR
 
+from tensorboardX import SummaryWriter
+
 from vision.utils.misc import str2bool, Timer, freeze_net_layers, store_labels
 from vision.ssd.ssd import MatchPrior
 from vision.ssd.vgg_ssd import create_vgg_ssd
@@ -35,6 +37,7 @@ parser.add_argument('--validation_dataset', help='Dataset directory path')
 parser.add_argument('--balance_data', action='store_true',
                     help="Balance training data by down-sampling more frequent labels.")
 
+parser.add_argument('--log_dir', default='logs', help='Path to tensorboard log directory. (default: logs)')
 
 parser.add_argument('--net', default="vgg16-ssd",
                     help="The network architecture, it can be mb1-ssd, mb1-lite-ssd, mb2-ssd-lite or vgg16-ssd.")
@@ -102,6 +105,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 args = parser.parse_args()
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() and args.use_cuda else "cpu")
+tf_logger = SummaryWriter(log_dir=args.log_dir)
 
 if args.use_cuda and torch.cuda.is_available():
     torch.backends.cudnn.benchmark = True
@@ -140,6 +144,9 @@ def train(loader, net, criterion, optimizer, device, debug_steps=100, epoch=-1):
                 f"Average Regression Loss {avg_reg_loss:.4f}, " +
                 f"Average Classification Loss: {avg_clf_loss:.4f}"
             )
+            tf_logger.add_scalar('avg_loss', avg_loss, i)
+            tf_logger.add_scalar('avg_reg_loss', avg_reg_loss, i)
+            tf_logger.add_scalar('avg_clf_loss', avg_clf_loss, i)
             running_loss = 0.0
             running_regression_loss = 0.0
             running_classification_loss = 0.0
