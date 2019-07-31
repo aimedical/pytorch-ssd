@@ -231,7 +231,7 @@ if __name__ == '__main__':
             # with COCO dataset API, you can supply only one dataset
             assert len(args.datasets) == 1
             dataset = CocoDetection(
-                root=args.dataset_path,
+                root=dataset_path,
                 annFile=args.coco_ann_path,
                 transform=train_transform,
                 target_transform=target_transform,
