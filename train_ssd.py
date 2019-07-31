@@ -36,7 +36,7 @@ parser.add_argument('--datasets', nargs='+', help='Dataset directory path')
 parser.add_argument('--coco_ann_path', help='Annotation JSON file for COCO Dataset')
 parser.add_argument('--validation_dataset', help='Dataset directory path')
 parser.add_argument('--validation_dataset_root', help='Validation dataset directory path')
-parser.add_argument('--validation_dataset_coco_ann_path', help='Validation dataset COCO annotation JSON file')
+parser.add_argument('--validation_coco_ann_path', help='Validation dataset COCO annotation JSON file')
 parser.add_argument('--balance_data', action='store_true',
                     help="Balance training data by down-sampling more frequent labels.")
 
