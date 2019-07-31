@@ -258,10 +258,10 @@ if __name__ == '__main__':
                                         dataset_type="test")
         logging.info(val_dataset)
     elif args.dataset_type == "coco":
-        assert args.validation_dataset_root and args.validation_coco_ann_file
+        assert args.validation_dataset_root and args.validation_coco_ann_path
         val_dataset = CocoDetection(
             root=args.validation_dataset_root,
-            annFile=args.validation_coco_ann_file,
+            annFile=args.validation_coco_ann_path,
             transform=test_transform,
             target_transform=target_transform,
         )
