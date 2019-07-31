@@ -35,6 +35,8 @@ parser.add_argument("--dataset_type", default="voc", type=str,
 parser.add_argument('--datasets', nargs='+', help='Dataset directory path')
 parser.add_argument('--coco_ann_path', help='Annotation JSON file for COCO Dataset')
 parser.add_argument('--validation_dataset', help='Dataset directory path')
+parser.add_argument('--validation_dataset_root', help='Validation dataset directory path')
+parser.add_argument('--validation_dataset_coco_ann_path', help='Validation dataset COCO annotation JSON file')
 parser.add_argument('--balance_data', action='store_true',
                     help="Balance training data by down-sampling more frequent labels.")
 
@@ -256,7 +258,13 @@ if __name__ == '__main__':
                                         dataset_type="test")
         logging.info(val_dataset)
     elif args.dataset_type == "coco":
-        val_dataset = CocoDetection(os.path.join(args.validation_dataset, 'val'), os.path.join(args.validation_dataset, 'val.json'), transform=test_transform, target_transform=target_transform)
+        assert args.validation_dataset_root and args.validation_coco_ann_file
+        val_dataset = CocoDetection(
+            root=args.validation_dataset_root,
+            annFile=args.validation_coco_ann_file,
+            transform=test_transform,
+            target_transform=target_transform,
+        )
         
     logging.info("validation dataset size: {}".format(len(val_dataset)))
 
