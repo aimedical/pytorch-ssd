@@ -2,7 +2,8 @@
 
 python train_ssd.py \
        --dataset_type coco \
-       --datasets ./ssd \
+       --datasets /ml-root/data/annotator-media \
+       --coco_ann_path /ml-root/data/ec01/001-test/train.json \
        --validation_dataset ./ssd \
        --net mb1-ssd \
        --base_net models/mobilenet_v1_with_relu_69_5.pth \

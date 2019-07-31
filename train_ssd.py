@@ -33,6 +33,7 @@ parser.add_argument("--dataset_type", default="voc", type=str,
                     help='Specify dataset type. Currently support voc and open_images.')
 
 parser.add_argument('--datasets', nargs='+', help='Dataset directory path')
+parser.add_argument('--coco_ann_path', help='Annotation JSON file for COCO Dataset')
 parser.add_argument('--validation_dataset', help='Dataset directory path')
 parser.add_argument('--balance_data', action='store_true',
                     help="Balance training data by down-sampling more frequent labels.")
@@ -224,7 +225,15 @@ if __name__ == '__main__':
             logging.info(dataset)
             num_classes = len(dataset.class_names)
         elif args.dataset_type == 'coco':
-            dataset = CocoDetection(os.path.join(dataset_path, 'train'), os.path.join(dataset_path, 'train.json'), transform=train_transform, target_transform=target_transform)
+            assert os.path.exists(args.coco_ann_path)
+            # with COCO dataset API, you can supply only one dataset
+            assert len(args.datasets) == 1
+            dataset = CocoDetection(
+                root=args.dataset_path,
+                annFile=args.coco_ann_path,
+                transform=train_transform,
+                target_transform=target_transform,
+            )
             label_file = os.path.join(args.checkpoint_folder, "coco-model-labels.txt")
             store_labels(label_file, dataset.class_names)
             num_classes = len(dataset.class_names)
