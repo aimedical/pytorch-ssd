@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/bin/bash -e
 
 BASE_NET_PATH=models/mobilenet_v1_with_relu_69_5.pth
+BASE_NET_URL=https://storage.googleapis.com/models-hao/mobilenet_v1_with_relu_69_5.pth
 ML_ROOT=/mnt/ml
 
 if [[ ! -f $BASE_NET_PATH ]]; then
-    wget -p models $BASE_NET_PATH
+    wget -p models $BASE_NET_URL
 fi
 
 python train_ssd.py \
