@@ -83,7 +83,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     dataset = CocoDetection(os.path.join(args.dataset, 'val'), os.path.join(args.dataset, 'val.json'))
-    model = PyTorchSSD(args.net_type, len(dataset.class_names)+1, args.trained_model, with_mult=args.mb2_width_mult, nms_method=args.nms_method)
+    model = PyTorchSSD(args.net_type, len(dataset.class_names), args.trained_model, with_mult=args.mb2_width_mult, nms_method=args.nms_method)
 
     crop = [int(c) for c in args.crop.split(':')]
     video_maker = VideoInference(os.path.join(args.dataset, 'val.json'), args.input, args.output, args.threshold, dict(x=crop[2], y=crop[3], w=crop[0], h=crop[1]))
