@@ -229,7 +229,7 @@ if __name__ == '__main__':
             store_labels(label_file, dataset.class_names)
             num_classes = len(dataset.class_names)
         else:
-            raise ValueError(f"Dataset tpye {args.dataset_type} is not supported.")
+            raise ValueError(f"Dataset type {args.dataset_type} is not supported.")
         datasets.append(dataset)
     logging.info(f"Stored labels into file {label_file}.")
     train_dataset = ConcatDataset(datasets)
